@@ -22,7 +22,5 @@ void loop() {
     {
       digitalWrite(LED_BUILTIN, HIGH);    
     }
-    //Send the same character back
-    Serial.println(receivedByte);
   }
 }
