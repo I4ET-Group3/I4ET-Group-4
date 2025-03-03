@@ -1,1 +1,21 @@
+void setup() {
+    pinMode(LED_BUILTIN, OUTPUT);  // Set the built-in LED pin as output
+    Serial.begin(9600);  // Start serial communication
+    Serial.println("Send 'M' to turn LED ON, 'T' to turn LED OFF.");
+}
+
+void loop() {
+    if (Serial.available()) {  // Check if data is available in Serial Monitor
+        char command = Serial.read();  // Read the character
+
+        if (command == 'M') {
+            digitalWrite(LED_BUILTIN, LOW);  // Turn LED ON (active LOW on ESP8266)
+            Serial.println("LED is ON");
+        } 
+        else if (command == 'T') {
+            digitalWrite(LED_BUILTIN, HIGH); // Turn LED OFF (active LOW on ESP8266)
+            Serial.println("LED is OFF");
+        }
+    }
+}
 
