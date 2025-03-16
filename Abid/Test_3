@@ -1,0 +1,43 @@
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+#define ONE_WIRE_BUS 5  // DS18B20 Data connected to GPIO5 (D1)
+#define RED_LED 4       // Red part of Bi-Color LED on GPIO4 (D2)
+#define GREEN_LED 0     // Green part of Bi-Color LED on GPIO0 (D3)
+
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+
+void setup() {
+    Serial.begin(9600);
+    Serial.println("Initializing DS18B20...");
+
+    sensors.begin();
+
+    // Setup LED pins as OUTPUT
+    pinMode(RED_LED, OUTPUT);
+    pinMode(GREEN_LED, OUTPUT);
+}
+
+void loop() {
+    Serial.println("Requesting temperature...");
+    sensors.requestTemperatures();  
+    float tempC = sensors.getTempCByIndex(0);
+
+    Serial.print("Temperature: ");
+    Serial.print(tempC);
+    Serial.println(" °C");
+
+    // LED Control Logic for Multi-Color LED
+    if (tempC > 50.0) {
+        digitalWrite(RED_LED, HIGH);   // Turn ON Red (High Temperature)
+        digitalWrite(GREEN_LED, LOW);  // Turn OFF Green
+        Serial.println("🚨 Attention Required! Temperature too high!");
+    } else {
+        digitalWrite(RED_LED, LOW);    // Turn OFF Red
+        digitalWrite(GREEN_LED, HIGH); // Turn ON Green (Safe Temperature)
+        Serial.println("✅ Everything is Safe.");
+    }
+
+    delay(2000);
+}
