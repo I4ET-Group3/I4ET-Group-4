@@ -1,0 +1,460 @@
+[
+    {
+        "id": "505ce3c2469adeaa",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b7c2a3fb7d1829f3",
+        "type": "mqtt in",
+        "z": "505ce3c2469adeaa",
+        "name": "",
+        "topic": "devices/MUIoT-NAPIoT",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "ed2da802ba117963",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "7aec3adfd4433f24"
+            ]
+        ]
+    },
+    {
+        "id": "7aec3adfd4433f24",
+        "type": "switch",
+        "z": "505ce3c2469adeaa",
+        "name": "",
+        "property": "payload.event_data.hardware_id",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "sim-fd30-132f4-cd5d",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "sim-fd30-132f4-eea1",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 350,
+        "y": 200,
+        "wires": [
+            [
+                "e67e64affb4b94a9"
+            ],
+            [
+                "26b2a8b36c857037"
+            ]
+        ]
+    },
+    {
+        "id": "e67e64affb4b94a9",
+        "type": "function",
+        "z": "505ce3c2469adeaa",
+        "name": "function 1",
+        "func": "// Find sensor values ​​by type\nconst tempSensor = msg.payload.event_data.payload.find(sensor => sensor.type === \"temp\");\nconst humSensor = msg.payload.event_data.payload.find(sensor => sensor.type === \"rel_hum\");\n\n// Create separate messages for each output\nconst tempMessage = { payload: tempSensor.value, unit: tempSensor.unit, timestamp: tempSensor.timestamp };\nconst humMessage = { payload: humSensor.value, unit: humSensor.unit, timestamp: humSensor.timestamp };\n\n// Send the temperature message to output 1 and the humidity message to output 2\nreturn [tempMessage, humMessage];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 180,
+        "wires": [
+            [
+                "c9c63c0177199b3f",
+                "170911127b7883db"
+            ],
+            [
+                "3eb9f51f43ac18b6"
+            ]
+        ]
+    },
+    {
+        "id": "c9c63c0177199b3f",
+        "type": "ui-gauge",
+        "z": "505ce3c2469adeaa",
+        "name": "Temperature",
+        "group": "ef82719190e795b2",
+        "order": 2,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Temperature",
+        "units": "C",
+        "icon": "temperature",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "-20",
+                "color": "#ff0000"
+            },
+            {
+                "from": "0",
+                "color": "#5cd65c"
+            },
+            {
+                "from": "20",
+                "color": "#ffc800"
+            },
+            {
+                "from": "35",
+                "color": "#ea5353"
+            }
+        ],
+        "min": "-20",
+        "max": "50",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 710,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "3eb9f51f43ac18b6",
+        "type": "ui-gauge",
+        "z": "505ce3c2469adeaa",
+        "name": "Humidity",
+        "group": "ef82719190e795b2",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Humidity",
+        "units": "%",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c"
+            },
+            {
+                "from": "60",
+                "color": "#ffc800"
+            },
+            {
+                "from": "80",
+                "color": "#ea5353"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 700,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "26b2a8b36c857037",
+        "type": "function",
+        "z": "505ce3c2469adeaa",
+        "name": "function 2",
+        "func": "// Encuentra los valores de los sensores según su tipo\nconst smokeSensor = msg.payload.event_data.payload.find(sensor => sensor.type === \"digital_sensor\");\n\n// Crea mensajes separados para cada salida\nconst somkeMessage = { payload: smokeSensor.value, unit: smokeSensor.unit, timestamp: smokeSensor.timestamp };\n\n// Envía el mensaje de temperatura a la salida 1 y el de humedad a la salida 2\nreturn somkeMessage;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 220,
+        "wires": [
+            [
+                "b6a01af47e206236",
+                "350e90780810c230"
+            ]
+        ]
+    },
+    {
+        "id": "170911127b7883db",
+        "type": "switch",
+        "z": "505ce3c2469adeaa",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "20",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 690,
+        "y": 100,
+        "wires": [
+            [
+                "341d6af676d84f3a"
+            ]
+        ]
+    },
+    {
+        "id": "b6a01af47e206236",
+        "type": "switch",
+        "z": "505ce3c2469adeaa",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 690,
+        "y": 240,
+        "wires": [
+            [
+                "60663af30995199b"
+            ]
+        ]
+    },
+    {
+        "id": "350e90780810c230",
+        "type": "ui-led",
+        "z": "505ce3c2469adeaa",
+        "name": "",
+        "group": "1fa7758db669beca",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "",
+        "labelPlacement": "right",
+        "labelAlignment": "center",
+        "states": [
+            {
+                "value": "1",
+                "valueType": "num",
+                "color": "#ff0000"
+            },
+            {
+                "value": "0",
+                "valueType": "num",
+                "color": "#00ff00"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showBorder": true,
+        "showGlow": true,
+        "x": 690,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "341d6af676d84f3a",
+        "type": "ui-template",
+        "z": "505ce3c2469adeaa",
+        "group": "ef82719190e795b2",
+        "page": "",
+        "ui": "",
+        "name": "",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<div>\n  <iframe \n    id=\"youtube-audio\" \n    style=\"width: 0; height: 0; border: none;\" \n    src=\"https://www.youtube.com/embed/bOjTNcqt-kM&ab_channel=ProgitexTV?autoplay=1&playlist=bOjTNcqt-kM&ab_channel=ProgitexTV&loop=1\" \n    frameborder=\"0\" \n    allow=\"autoplay\">\n  </iframe>\n  <button \n    id=\"stop-button\" \n    style=\"padding: 10px; background-color: red; color: white; font-weight: bold; margin-top: 10px;\">\n    Detener Alarma\n  </button>\n</div>\n\n<script>\n  (function(scope) {\n    scope.$watch('msg', function(msg) {\n      if (msg && msg.payload) {\n        let player = document.getElementById('youtube-audio');\n        player.src = `https://www.youtube.com/embed/bOjTNcqt-kM&ab_channel=ProgitexTV?autoplay=1&playlist=bOjTNcqt-kM&ab_channel=ProgitexTV&loop=1`; // Reemplaza abc123 con tu ID de video\n        player.style.width = \"0\"; // Ocultar el iframe visualmente\n        player.style.height = \"0\";\n        player.style.border = \"none\";\n      }\n    });\n\n    // Detener el sonido al presionar el botón\n    document.getElementById('stop-button').addEventListener('click', function() {\n      let player = document.getElementById('youtube-audio');\n      player.src = \"\"; // Detiene el sonido vaciando el iframe\n    });\n  })(scope);\n</script>\n",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 860,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "60663af30995199b",
+        "type": "ui-template",
+        "z": "505ce3c2469adeaa",
+        "group": "1fa7758db669beca",
+        "page": "",
+        "ui": "",
+        "name": "",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<div>\n  <iframe \n    id=\"youtube-audio\" \n    style=\"width: 0; height: 0; border: none;\" \n    src=\"https://www.youtube.com/embed/bOjTNcqt-kM&ab_channel=ProgitexTV?autoplay=1&playlist=bOjTNcqt-kM&ab_channel=ProgitexTV&loop=1\" \n    frameborder=\"0\" \n    allow=\"autoplay\">\n  </iframe>\n  <button \n    id=\"stop-button\" \n    style=\"padding: 10px; background-color: red; color: white; font-weight: bold; margin-top: 10px;\">\n    Detener Alarma\n  </button>\n</div>\n\n<script>\n  (function(scope) {\n    scope.$watch('msg', function(msg) {\n      if (msg && msg.payload) {\n        let player = document.getElementById('youtube-audio');\n        player.src = `https://www.youtube.com/embed/bOjTNcqt-kM&ab_channel=ProgitexTV?autoplay=1&playlist=bOjTNcqt-kM&ab_channel=ProgitexTV&loop=1`; // Reemplaza abc123 con tu ID de video\n        player.style.width = \"0\"; // Ocultar el iframe visualmente\n        player.style.height = \"0\";\n        player.style.border = \"none\";\n      }\n    });\n\n    // Detener el sonido al presionar el botón\n    document.getElementById('stop-button').addEventListener('click', function() {\n      let player = document.getElementById('youtube-audio');\n      player.src = \"\"; // Detiene el sonido vaciando el iframe\n    });\n  })(scope);\n</script>\n",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 860,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ed2da802ba117963",
+        "type": "mqtt-broker",
+        "name": "Test Mosquitto",
+        "broker": "test.mosquitto.org",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "ef82719190e795b2",
+        "type": "ui-group",
+        "name": "BESS ROOM",
+        "page": "8d9bca231b35b6e0",
+        "width": 6,
+        "height": 1,
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "1fa7758db669beca",
+        "type": "ui-group",
+        "name": "SMOKE",
+        "page": "8d9bca231b35b6e0",
+        "width": 6,
+        "height": 1,
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "8d9bca231b35b6e0",
+        "type": "ui-page",
+        "name": "HYBRID SHIP PROPULSION SYSTEM POWER MANAGEMENT AND HEALTH MONITORING",
+        "ui": "a1d741f2c2678cae",
+        "path": "/page1",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "1eac02b6e4b2d15d",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "a1d741f2c2678cae",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true
+    },
+    {
+        "id": "1eac02b6e4b2d15d",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094CE",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    }
+]
