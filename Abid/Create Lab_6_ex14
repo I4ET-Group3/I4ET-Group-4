@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.10;
+
+contract AgeValidation {
+    
+    // Public mapping from user ID to age
+    mapping(uint => uint) public age;
+
+    // Modifier to check if user is older than a certain age
+    modifier olderThan(uint _age, uint _userId) {
+        require(age[_userId] >= _age, "User is not old enough.");
+        _;
+    }
+
+    // Function that uses the modifier to validate adult users (18+)
+    function validationUsers(uint _userId) public view olderThan(18, _userId) {
+        // Function body intentionally left blank
+    }
+
+    // Optional: helper function to set a user's age (for testing)
+    function setUserAge(uint _userId, uint _age) public {
+        age[_userId] = _age;
+    }
+}
