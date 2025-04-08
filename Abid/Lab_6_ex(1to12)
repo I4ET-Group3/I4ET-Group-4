@@ -1,0 +1,73 @@
+// SPDX-License-Identifier: MIT
+
+// Exercise 1: Solidity version
+pragma solidity ^0.8.10;
+
+// Exercise 1: Contract declaration
+contract Factory {
+
+    // Exercise 2: Declare a uint for ID digit length
+    uint idDigits = 16;
+
+    // Exercise 3: Create idModulus to restrict ID length
+    uint idModulus = 10 ** idDigits;
+
+    // Exercise 4: Define a Product struct with name and id
+    struct Product {
+        string name;
+        uint id;
+    }
+
+    // Exercise 5: Public array to store Product structs
+    Product[] public products;
+
+    // Exercise 6: Private function to create product
+    function _createProduct(string memory _name, uint _id) private {
+        products.push(Product(_name, _id));
+        uint productId = products.length - 1;
+
+        // Set owner and increment their product count
+        productToOwner[productId] = msg.sender;
+        ownerProductCount[msg.sender]++;
+
+        // Emit event for frontend
+        emit NewProduct(productId, _name, _id);
+    }
+
+    // Exercise 7: Private function to generate random ID based on name
+    function _generateRandomId(string memory _str) private view returns (uint) {
+        // Exercise 8: Hash the name and trim it to 16 digits
+        uint rand = uint(keccak256(abi.encodePacked(_str)));
+        return rand % idModulus;
+    }
+    function createRandomProduct(string memory _name) public {
+        uint randId = _generateRandomId(_name);
+        _createProduct(_name, randId);
+    }
+    // Exercise 9: Declare event for frontend to listen to
+    event NewProduct(uint ArrayProductId, string name, uint id);
+
+    // Exercise 10: Mappings for ownership tracking
+    mapping(uint => address) public productToOwner;
+    mapping(address => uint) ownerProductCount;
+    // Exercise 11: Assign ownership manually
+    function Ownership(uint _productId) public {
+        productToOwner[_productId] = msg.sender;
+        ownerProductCount[msg.sender]++;
+    }
+     // Exercise 12: Return products owned by an address
+    function getProductsByOwner(address _owner) external view returns (uint[] memory) {
+        uint counter = 0;
+        uint[] memory result = new uint[](ownerProductCount[_owner]);
+
+        for (uint i = 0; i < products.length; i++) {
+            if (productToOwner[i] == _owner) {
+                result[counter] = i;
+                counter++;
+            }
+        }
+
+        return result;
+    }
+}
+
